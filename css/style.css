@@ -1,0 +1,106 @@
+body {
+	font-family: "Tahoma";
+	color: white;
+	font-size: 20px;
+}
+form {
+	width: 600px;
+	margin: auto auto;
+	background-color: grey;
+	border: 6px solid red;
+	padding-left: 80px;
+	padding-right: 80px;
+}
+h1 {
+	font-size: 30px;
+	font-weight: 900;
+	text-transform: uppercase;
+	color: red;
+	padding: 30px 40px;
+	margin: 40px 0;
+	text-shadow: 8px 8px 0px white;
+	background-color: lightblue;
+	text-align: center;
+	border: 3px solid transparent;
+	border-image: linear-gradient(45deg, red, red) 10% round;
+}
+#name, #country, #email, #age, #wherefrom, #askinfo, textarea {
+	margin-bottom: 20px;
+}
+#name {
+	width: 70%;
+}
+#country {
+	width: 60%;
+}
+#email {
+	background-color: red;
+	border-color: lightblue;
+	width: 82%;
+}
+#age {
+	border-radius: 0px;
+	font-size: 25px;
+	color: blue;
+	background-color: red;
+	border: 3px groove lightgrey;
+}
+input {
+	height: 25px;
+	background-color: lightblue;
+	border-radius: 10px;
+	border: 3px solid red;
+	margin-left: 0;
+}
+#compskillsfield {
+	border: unset;
+}
+#wherefrom {
+	background-color: lightblue;
+	border: 1px solid blue;
+	height: 30px;
+	border-radius: unset;
+}
+textarea {
+	margin: 20px 0px;
+	background-color: lightblue;
+	border-radius: 20px;
+	width: 100%;
+	box-shadow: 0 0 1px red, 4px 4px 4px red;
+}
+#dateOfSubmit {
+	background-color: red;
+	border-color: lightblue;
+	border-radius: 20px;
+	color: white;
+	font-weight: 500;
+	font-size: 18px;
+	height: 40px;
+	padding-right: 50px;
+}
+#buttons {
+	border: unset;
+	margin: 20px auto;
+	text-transform: uppercase;
+}
+#follow {
+	font-size: 20px;
+	color: red;
+	margin-left: 95px;
+	margin-right: 5px;
+	width: 200px;
+	height: 40px;
+	float: left;
+	border-radius: 20px;
+	font-weight: 900;
+	padding-bottom: 10px;
+}
+#reset {
+	font-size: 20px;
+	color: rgb(255,70,70);
+	width: 200px;
+	height: 40px;
+	border-radius: 20px;
+	font-weight: 900;
+	padding-bottom: 10px;
+}

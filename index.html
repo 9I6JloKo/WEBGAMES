@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>регистрация</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<form>
+		<h1>регистрация подписчика</h1>
+		<label for="name">Как вас зовут?</label>
+		<input type="text" name="name" id="name"><br>
+		<label for="country">Страна проживания?</label>
+		<input type="text" name="country" id="country"><br>
+		<label>Ваш адрес электронной<br>почты:</label>
+		<input type="email" id="email" name="email"><br>
+		<label>Ваш пол:</label>
+		<input type="radio" name="sex" value="0">Женский
+		<input type="radio" name="sex" value="1">Мужской<br>
+		<label for="age">Укажите возраст</label>
+		<input type="number" id="age" name="age" min="14" max="99"><br>
+		<label for="compskillsfield">Ваш уровень владения компьютером:</label><br>
+		<fieldset id="compskillsfield">
+			<input type="radio" name="compskills" value="0">Начальный<br>
+			<input type="radio" name="compskills" value="1">Средний<br>
+			<input type="radio" name="compskills" value="2">Профессиональный<br>
+			<input type="radio" name="compskills" value="3">Не владею
+		</fieldset><br>
+		<label for="wherefrom">Откуда о нас узнали?</label>
+		<select name="wherefrom" id="wherefrom">
+			<option value="0">-</option>
+			<option value="1">Интернет</option>
+			<option value="2">Печатные издания</option>
+			<option value="3">Посоветовали знакомые</option>
+			<option value="4">Телефидение</option>
+		</select><br>
+		<label for="askinfo">Дополнительная информация</label><br>
+		<textarea id="askinfo" name="askinfo" rows="15" cols="50"></textarea>
+		<label for="dateOfSubmit">Дата подписки</label>
+		<input type="text" id="dateOfSubmit" name="dateOfSubmit" value="        mm/dd/yyyy"><br>
+		<!--Дата всё же здесь вписывается!! type не равен date-->
+		<fieldset id="buttons">
+			<input type="submit" name="follow" id="follow" value="подписаться">
+			<input type="reset" id="reset" value="очистить">
+		</fieldset>
+	</form>
+</body>
+</html>
