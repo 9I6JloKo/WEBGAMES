@@ -6,15 +6,23 @@
 package servlets;
 
 import entity.Client;
+import entity.History;
 import entity.Product;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.DateFormatter;
 import session.ClientFacade;
+import session.HistoryFacade;
 import session.ProductFacade;
 
 /**
@@ -28,11 +36,15 @@ import session.ProductFacade;
     "/ChangeClient",
     "/ChangeProduct",
     "/addingClient",
-    "/addingProduct"
+    "/addingProduct",
+    "/Buying",
+    "/BuyingProduct"
+    
 })
 public class ShopServlet extends HttpServlet {
     @EJB ClientFacade clientFacade;
     @EJB ProductFacade productFacade;
+    @EJB HistoryFacade historyFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -47,6 +59,8 @@ public class ShopServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         String path = request.getServletPath();
+        List<Client> clientList = clientFacade.findAll();
+        List<Product> productList = productFacade.findAll();
         switch (path) {
             case "/addClient":
                 request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
@@ -55,7 +69,9 @@ public class ShopServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/addProduct.jsp").forward(request, response);
                 break;
             case "/Buying":
-                request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
+                request.setAttribute("clients", clientList);
+                request.setAttribute("products", productList);
+                request.getRequestDispatcher("/WEB-INF/buying.jsp").forward(request, response);
                 break;
             case "/ChangeClient":
                 request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
@@ -117,6 +133,31 @@ public class ShopServlet extends HttpServlet {
                     request.setAttribute("productPiece", request.getParameter("productPiece"));
                 }
                 request.getRequestDispatcher("/WEB-INF/addProduct.jsp").forward(request, response);
+                break;
+            case "/BuyingProduct":
+                if(    !clientList.isEmpty()
+                    && !productList.isEmpty()
+                    && clientFacade.find(request.getParameter("clientt")).getClientMoney() >= productFacade.find(request.getParameter("productt")).getPrice()
+                    && productFacade.find(request.getParameter("productt")).getPiece() >= 1){
+                        clientFacade.find(request.getParameter("clientt")).setClientMoney(clientFacade.find(request.getParameter("clientt")).getClientMoney()-productFacade.find(request.getParameter("productt")).getPrice());
+                        clientFacade.edit(clientFacade.find(request.getParameter("clientt")));
+                        productFacade.find(request.getParameter("productt")).setPiece(productFacade.find(request.getParameter("productt")).getPiece()-1);
+                        productFacade.edit(productFacade.find(request.getParameter("clientt")));
+                        History history = new History();
+                        history.setLocalDate(LocalDate.now().plusWeeks(2));
+                        history.setClientName(clientFacade.find(request.getParameter("clientt")).getClientName());
+                        history.setClientNumber(clientFacade.find(request.getParameter("clientt")).getClientNumber());
+                        history.setProduct(productFacade.find(request.getParameter("productt")).getModell());
+                        history.setSize(productFacade.find(request.getParameter("productt")).getSize());
+                        Calendar c = new GregorianCalendar();
+                        history.setDateOfBuying(c.getTime());
+                        historyFacade.create(history);
+                        request.setAttribute("info", "Успешно!");
+                }
+                else{
+                    request.setAttribute("info", "Объекты выбраны неправильно");
+                }
+                request.getRequestDispatcher("/WEB-INF/buying.jsp").forward(request, response);
                 break;
         }
     }
