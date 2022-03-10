@@ -34,7 +34,7 @@
                 </div>
                 <div class="form-group">
                     <label for="clientPassword" class="form-label mt-4">Client password</label>
-                    <input required type="text" class="form-control" id="clientPassword" name="clientPassword" placeholder="Password" minlengt="6">
+                    <input required type="text" class="form-control" id="clientPassword" name="clientPassword" placeholder="Password" minlength="6">
                 </div>
                 <div style="margin: 30px auto; text-align: center">
                     <button type="submit" class="btn btn-primary" style=" width:100px">Submit</button>

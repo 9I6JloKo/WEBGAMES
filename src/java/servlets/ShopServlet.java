@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import com.sun.el.lang.ELArithmetic;
 import entity.Client;
 import entity.History;
 import entity.Product;
@@ -36,8 +37,8 @@ import session.ProductFacade;
     "/addingClient",
     "/addingProduct",
     "/Buying",
-    "/BuyingProduct"
-    
+    "/BuyingProduct",
+    "/ChangingClient",
 })
 public class ShopServlet extends HttpServlet {
     @EJB ClientFacade clientFacade;
@@ -72,10 +73,11 @@ public class ShopServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/buying.jsp").forward(request, response);
                 break;
             case "/ChangeClient":
-                request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
+                request.setAttribute("clients", clientList);
+                request.getRequestDispatcher("/WEB-INF/changeClient.jsp").forward(request, response);
                 break;
             case "/ChangeProduct":
-                request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/changeProduct.jsp").forward(request, response);
                 break;
             case "/addingClient":
                 try{
@@ -124,33 +126,95 @@ public class ShopServlet extends HttpServlet {
                 request.getRequestDispatcher("/WEB-INF/addProduct.jsp").forward(request, response);
                 break;
             case "/BuyingProduct":
-                Client client = clientFacade.find(Long.parseLong(request.getParameter("clientt")));
-                Product product = productFacade.find(Long.parseLong(request.getParameter("productt")));
-                if(    !clientList.isEmpty()
-                    && !productList.isEmpty()
-                    && client.getClientMoney() >= product.getPrice()
-                    && product.getPiece() >= 1){
-                        client.setClientMoney(client.getClientMoney() - product.getPrice());
-                        clientFacade.edit(client);
-                        product.setPiece(product.getPiece()-1);
-                        productFacade.edit(product);
-                        History history = new History();
-                        history.setLocalDate(LocalDate.now().plusWeeks(2));
-                        history.setClientName(client.getClientName());
-                        history.setClientNumber(client.getClientNumber());
-                        history.setProduct(product.getModell());
-                        history.setSize(product.getSize());
-                        Calendar c = new GregorianCalendar();
-                        history.setDateOfBuying(c.getTime());
-                        historyFacade.create(history);
-                        request.setAttribute("info", "Successfull!");
+                try{
+                    Client client = clientFacade.find(Long.parseLong(request.getParameter("clientt")));
+                    Product product = productFacade.find(Long.parseLong(request.getParameter("productt")));
+                    if(    !clientList.isEmpty()
+                        && !productList.isEmpty()
+                        && client.getClientMoney() >= product.getPrice()
+                        && product.getPiece() >= 1){
+                            client.setClientMoney(client.getClientMoney() - product.getPrice());
+                            clientFacade.edit(client);
+                            product.setPiece(product.getPiece()-1);
+                            productFacade.edit(product);
+                            History history = new History();
+                            history.setLocalDate(LocalDate.now().plusWeeks(2));
+                            history.setClientName(client.getClientName());
+                            history.setClientNumber(client.getClientNumber());
+                            history.setProduct(product.getModell());
+                            history.setSize(product.getSize());
+                            Calendar c = new GregorianCalendar();
+                            history.setDateOfBuying(c.getTime());
+                            historyFacade.create(history);
+                            request.setAttribute("info", "Successfull!");
+                    }
+                    else{
+                        request.setAttribute("info", "Error");
+                    }
                 }
-                else{
+                catch(Exception e){
                     request.setAttribute("info", "Error");
                 }
                 request.setAttribute("clients", clientList);
                 request.setAttribute("products", productList);
-                request.getRequestDispatcher("Buying").forward(request, response);
+                request.getRequestDispatcher("Buying").forward(request, response);   
+                break;
+            case "/ChangingClient":
+                Long find = Long.parseLong(request.getParameter("clientt2"));
+                try{
+                    Client client = clientFacade.find(find);
+                    System.out.println("asds");
+                    switch(request.getParameter("optionsRadios")){
+                        case "1":
+                                client.setClientName(request.getParameter("responsse"));
+                                clientFacade.edit(client);
+                                request.setAttribute("info", "Successfull!");   
+                            break;
+                        case "2":
+                            client.setClientSurname(request.getParameter("responsse"));
+                            clientFacade.edit(client);
+                            request.setAttribute("info", "Successfull!");
+                            break;
+                        case "3":
+                            if(Long.parseLong(request.getParameter("responsse")) > 5000000){
+                                client.setClientNumber(request.getParameter("responsse"));
+                                clientFacade.edit(client);
+                                request.setAttribute("info", "Successfull!");
+                            }
+                            else{
+                                request.setAttribute("info", "Error");
+                            }
+                            break;
+                        case "4":
+                                client.setClientMoney(Double.parseDouble(String.format("%.2f",Double.parseDouble(request.getParameter("responsse")))));
+                                clientFacade.edit(client);
+                                request.setAttribute("info", "Successfull!");   
+                            break;
+                        case "5":
+                            client.setLogin(request.getParameter("responsse"));
+                            clientFacade.edit(client);
+                            request.setAttribute("info", "Successfull!");
+                            break;
+                        case "6":
+                            if(request.getParameter("responsse").length() > 5){
+                                client.setPassword(request.getParameter("responsse"));
+                                clientFacade.edit(client);
+                                request.setAttribute("info", "Successfull!");   
+                            }
+                            else{
+                                request.setAttribute("info", "Error");
+                            }
+                            break;
+                        default:
+                            request.setAttribute("info", "Choose radiobutton");
+                            break;
+                    }
+                }
+                catch(Exception e){
+                    request.setAttribute("info", "Error");
+                    request.setAttribute("responsse", request.getParameter("responsse"));    
+                }
+                request.getRequestDispatcher("ChangeClient").forward(request, response);
                 break;
         }
     }

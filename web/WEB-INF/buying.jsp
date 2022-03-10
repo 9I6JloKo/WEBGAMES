@@ -15,13 +15,13 @@
                 <label class="form-label mt-4" for="clientt">Clients</label>
                 <select class="form-select"  id="clientt" name="clientt">
                     <c:forEach var="client" items="${clients}">
-                        <option style="text-align: center" value="${client.id}" <c:if test="${client.id eq clientt}">selected</c:if>>||${client.clientName} ${client.clientSurname}|| ||Number: ${client.clientNumber}|| ||Money: ${client.clientMoney}|| ||Log & Pass: @${client.login}@ @${client.password}@|| ||Level: ${client.level}||</option>
+                        <option style="text-align: center" value="${client.id}">||${client.clientName} ${client.clientSurname}|| ||Number: ${client.clientNumber}|| ||Money: ${client.clientMoney}|| ||Log & Pass: @${client.login}@ @${client.password}@|| ||Level: ${client.level}||</option>
                     </c:forEach>
                 </select>
                 <label class="form-label mt-4" for="productt">Products</label>
                 <select class="form-select"  id="productt" name="productt">
                     <c:forEach var="product" items="${products}">
-                        <option style="text-align: center" value="${product.id}" <c:if test="${product.id eq productt}">selected</c:if>>||${product.bywho} ${product.modell}||    ||Size: ${product.size}||     ||Price: ${product.price}€||     ||Amount: ${product.piece} pairs||</option>
+                        <option style="text-align: center" value="${product.id}">||${product.bywho} ${product.modell}||    ||Size: ${product.size}||     ||Price: ${product.price}€||     ||Amount: ${product.piece} pairs||</option>
                     </c:forEach>
                 </select>
                 <div style="margin: 30px auto; text-align: center">
