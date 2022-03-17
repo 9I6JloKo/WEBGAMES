@@ -13,7 +13,7 @@
                   </div>
                   <div class="form-group">
                     <label for="file" class="form-label mt-4">Выберите файл</label>
-                    <input type="file" class="form-control" id="file" name="file" aria-describedby="" placeholder="" onchange="a()" >
+                    <input type="file" class="form-control" id="file" name="file" aria-describedby="" placeholder="">
                     <small id="file" hidden class="form-text text-muted">Error</small>
                   </div>
                    <input class="btn btn-primary mt-5" type="submit" value="Загрузить файл">
