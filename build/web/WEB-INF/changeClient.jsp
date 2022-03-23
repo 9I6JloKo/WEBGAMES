@@ -7,8 +7,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <main>
-    <div style = "width: 680px; margin: auto auto">
-        <form action="ChangingClient" method="POST">
+    <div style = "width: 980px; margin: auto auto">
+        <form action="changingClient" method="POST">
             <fieldset class="form-group">
                 <legend style="text-align: center; margin-top: 30px">Change Client</legend>
                 <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
@@ -22,37 +22,37 @@
                     <div class="form-check">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="1">
-                        Client name
+                        Name
                       </label>
                     </div>
                     <div class="form-check">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2">
-                        Client surname
+                        Surname
                       </label>
                     </div>
                     <div class="form-check disabled">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="3">
-                        Client number
+                        Number
                       </label>
                     </div>
                     <div class="form-check disabled">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="4">
-                        Client money(euros)
+                        Money(euros)
                       </label>
                     </div>
                     <div class="form-check disabled">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="5">
-                        Client login
+                        Login
                       </label>
                     </div>
                     <div class="form-check disabled">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="6">
-                        Client password
+                        Password
                       </label>
                     </div>
                     <input required style="margin-top: 30px" type="text" value="${input}" class="form-control" id="responsse" name="responsse" placeholder="input">

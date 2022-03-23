@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import session.ClientFacade;
 import session.HistoryFacade;
 import session.ProductFacade;
+import tools.PasswordProtected;
 
 /**
  *
@@ -31,14 +32,14 @@ import session.ProductFacade;
 @WebServlet(name = "ShopServlet", urlPatterns = {
     "/addClient",
     "/addProduct",
-    "/Buying",
-    "/ChangeClient",
-    "/ChangeProduct",
+    "/buying",
+    "/changeClient",
+    "/changeProduct",
     "/addingClient",
     "/addingProduct",
-    "/Buying",
-    "/BuyingProduct",
-    "/ChangingClient",
+    "/buyingProduct",
+    "/changingClient",
+    "/changingProduct",
 })
 public class ShopServlet extends HttpServlet {
     @EJB ClientFacade clientFacade;
@@ -60,6 +61,7 @@ public class ShopServlet extends HttpServlet {
         String path = request.getServletPath();
         List<Client> clientList = clientFacade.findAll();
         List<Product> productList = productFacade.findAll();
+        PasswordProtected passwordProtected = new PasswordProtected();
         switch (path) {
             case "/addClient":
                 request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
@@ -67,16 +69,17 @@ public class ShopServlet extends HttpServlet {
             case "/addProduct":
                 request.getRequestDispatcher("/WEB-INF/addProduct.jsp").forward(request, response);
                 break;
-            case "/Buying":
+            case "/buying":
                 request.setAttribute("clients", clientList);
                 request.setAttribute("products", productList);
                 request.getRequestDispatcher("/WEB-INF/buying.jsp").forward(request, response);
                 break;
-            case "/ChangeClient":
+            case "/changeClient":
                 request.setAttribute("clients", clientList);
                 request.getRequestDispatcher("/WEB-INF/changeClient.jsp").forward(request, response);
                 break;
-            case "/ChangeProduct":
+            case "/changeProduct":
+                request.setAttribute("products", productList);
                 request.getRequestDispatcher("/WEB-INF/changeProduct.jsp").forward(request, response);
                 break;
             case "/addingClient":
@@ -87,7 +90,9 @@ public class ShopServlet extends HttpServlet {
                     client.setClientNumber(request.getParameter("clientNumber"));
                     client.setClientMoney(Double.parseDouble(request.getParameter("clientMoney")));
                     client.setLogin(request.getParameter("clientLogin"));
-                    client.setPassword(request.getParameter("clientPassword"));
+                    String salt = passwordProtected.getSalt();
+                    String password = passwordProtected.getProtectedPassword(request.getParameter("clientPassword"), salt);
+                    client.setPassword(password);
                     client.setLevel("1");
                     clientFacade.create(client);
                     request.setAttribute("info", "Successfull!");
@@ -125,7 +130,7 @@ public class ShopServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher("/WEB-INF/addProduct.jsp").forward(request, response);
                 break;
-            case "/BuyingProduct":
+            case "/buyingProduct":
                 try{
                     Client client = clientFacade.find(Long.parseLong(request.getParameter("clientt")));
                     Product product = productFacade.find(Long.parseLong(request.getParameter("productt")));
@@ -157,13 +162,12 @@ public class ShopServlet extends HttpServlet {
                 }
                 request.setAttribute("clients", clientList);
                 request.setAttribute("products", productList);
-                request.getRequestDispatcher("Buying").forward(request, response);   
+                request.getRequestDispatcher("buying").forward(request, response);   
                 break;
-            case "/ChangingClient":
+            case "/changingClient":
                 Long find = Long.parseLong(request.getParameter("clientt2"));
                 try{
                     Client client = clientFacade.find(find);
-                    System.out.println("asds");
                     switch(request.getParameter("optionsRadios")){
                         case "1":
                                 client.setClientName(request.getParameter("responsse"));
@@ -215,6 +219,47 @@ public class ShopServlet extends HttpServlet {
                     request.setAttribute("responsse", request.getParameter("responsse"));    
                 }
                 request.getRequestDispatcher("ChangeClient").forward(request, response);
+            case "/changingProduct":
+                Long find2 = Long.parseLong(request.getParameter("product2"));
+                try{
+                    Product product = productFacade.find(find2);
+                    switch(request.getParameter("optionsRadios")){
+                        case "1":
+                                product.setBywho(request.getParameter("responsse"));
+                                productFacade.edit(product);
+                                request.setAttribute("info", "Successfull!");   
+                            break;
+                        case "2":
+                                product.setModell(request.getParameter("responsse"));
+                                productFacade.edit(product);
+                                request.setAttribute("info", "Successfull!");
+                            break;
+                        case "3":
+                                product.setPrice(Double.parseDouble(String.format("%.2f",Double.parseDouble(request.getParameter("responsse")))));
+                                productFacade.edit(product);
+                                request.setAttribute("info", "Successfull!");
+                            break;
+                        case "4":
+                                product.setSize(Double.parseDouble(String.format("%.1f",Double.parseDouble(request.getParameter("responsse")))));
+                                productFacade.edit(product);
+                                request.setAttribute("info", "Successfull!");   
+                            break;
+                        case "5":
+                                product.setPiece(Integer.parseInt(request.getParameter("responsse")));
+                                product.setMaxPiece(Integer.parseInt(request.getParameter("responsse")));
+                                productFacade.edit(product);
+                                request.setAttribute("info", "Successfull!");
+                            break;
+                        default:
+                            request.setAttribute("info", "Choose radiobutton");
+                            break;
+                    }
+                }
+                catch(Exception e){
+                    request.setAttribute("info", "Error");
+                    request.setAttribute("responsse", request.getParameter("responsse"));    
+                }
+                request.getRequestDispatcher("changeProduct").forward(request, response);
                 break;
         }
     }

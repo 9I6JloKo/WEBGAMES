@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <main>
     <div style = "width: 750px; margin: auto auto">
-        <form action="BuyingProduct" method="POST">
+        <form action="buyingProduct" method="POST">
             <fieldset>
                 <legend style="text-align: center; margin-top: 30px">Buy product</legend>
                 <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>

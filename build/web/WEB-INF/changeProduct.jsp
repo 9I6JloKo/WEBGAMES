@@ -7,35 +7,50 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <main>
-    <div style = "width: 680px; margin: auto auto">
-        <form action="addingProduct" method="POST">
-            <fieldset>
+    <div style = "width: 980px; margin: auto auto">
+        <form action="changingProduct" method="POST">
+            <fieldset class="form-group">
                 <legend style="text-align: center; margin-top: 30px">Change Product</legend>
                 <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
-                <div class="form-group">
-                    <label for="productByWho" class="form-label mt-4">Product company</label>
-                    <input required type="text" class="form-control" id="clientNumber" name="productByWho"  placeholder="Company">
-                </div>
-                <div class="form-group">
-                    <label class="form-label mt-4" for="productModell">Product model</label>
-                    <input required type="text" class="form-control" id="clientName" name="productModell" placeholder="Model">
-                </div>
-                <div class="form-group">
-                    <label for="productSize" class="form-label mt-4">Product size</label>
-                    <input required type="number" class="form-control" id="clientSurname" name="productSize" placeholder="Size" min="3" max="50" step="0.5">
-                </div>
-                <div class="form-group">
-                    <label for="productPrice" class="form-label mt-4">Product price(euros)</label>
-                    <input required type="number" class="form-control" id="clientMoney" name="productPrice" placeholder="Price" min="0.01" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label for="productPiece" class="form-label mt-4">Product amount(in pairs)</label>
-                    <input required type="number" class="form-control" id="clientLogin" name="productPiece" placeholder="Amount" min="1" max="100" step="1">
-                </div>
-                <div style=" margin: 30px auto; text-align: center">
-                    <button type="submit" class="btn btn-primary" style=" width:100px">Submit</button>
-                    <button type="reset" class="btn btn-primary" style="margin-left: 10px; width:100px">Reset</button>
-                </div>
+                    <label class="form-label mt-4" for="product2">Products</label>
+                    <select class="form-select"  id="product2" name="product2">
+                        <c:forEach var="product" items="${products}">
+                            <option style="text-align: center" value="${product.id}">||${product.bywho} ${product.modell}|| ||Price: ${product.price}|| ||Size: ${product.size}|| ||Piece: ${product.piece} in ${product.maxPiece}||Price: ${product.maxPiece}||||</option>
+                        </c:forEach>
+                    </select>
+                    <legend class="mt-4">What do you want to change?</legend>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="1">
+                        ByWho
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios2" value="2">
+                        Modell
+                      </label>
+                    </div>
+                    <div class="form-check disabled">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="3">
+                        Price
+                      </label>
+                    </div>
+                    <div class="form-check disabled">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="4">
+                        Size
+                      </label>
+                    </div>
+                    <div class="form-check disabled">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="5">
+                        Piece
+                      </label>
+                    </div>
+                    <input required style="margin-top: 30px" type="text" value="${input}" class="form-control" id="responsse" name="responsse" placeholder="input">
+                    <button style="margin-top: 10px" type="submit" class="btn btn-primary" style="width:100px">Change</button>
             </fieldset>
         </form>
     </div>
