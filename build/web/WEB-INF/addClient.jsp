@@ -11,7 +11,7 @@
         <form action="addingClient" method="POST">
             <fieldset>
                 <legend style="text-align: center; margin-top: 30px">Add Client to DB</legend>
-                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
+                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h5>
                 <div class="form-group">
                     <label class="form-label mt-4" for="clientName">Client name</label>
                     <input required type="text" class="form-control" id="clientName" name="clientName" placeholder="Name">

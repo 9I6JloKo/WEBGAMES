@@ -11,7 +11,7 @@
         <form action="changingClient" method="POST">
             <fieldset class="form-group">
                 <legend style="text-align: center; margin-top: 30px">Change Client</legend>
-                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
+                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h5>
                     <label class="form-label mt-4" for="clientt2">Clients</label>
                     <select class="form-select"  id="clientt2" name="clientt2">
                         <c:forEach var="client" items="${clients}">
@@ -53,6 +53,12 @@
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="6">
                         Password
+                      </label>
+                    </div>
+                    <div class="form-check disabled">
+                      <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios3" value="7">
+                        Level(1-3)
                       </label>
                     </div>
                     <input required style="margin-top: 30px" type="text" value="${input}" class="form-control" id="responsse" name="responsse" placeholder="input">

@@ -11,7 +11,7 @@
         <form action="addingProduct" method="POST">
             <fieldset>
                 <legend style="text-align: center; margin-top: 30px">Add Product to DB</legend>
-                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
+                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h5>
                 <div class="form-group">
                     <label for="productByWho" class="form-label mt-4">Product company</label>
                     <input required type="text" class="form-control" id="clientNumber" name="productByWho"  placeholder="Company">

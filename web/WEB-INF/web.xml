@@ -6,11 +6,12 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
+        <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
     <jsp-config>
         <jsp-property-group>
             <display-name>headerfooter</display-name>
+            <url-pattern>/login.jsp</url-pattern>
             <url-pattern>/WEB-INF/changeProduct.jsp</url-pattern>
             <url-pattern>/WEB-INF/addClient.jsp</url-pattern>
             <url-pattern>/WEB-INF/buying.jsp</url-pattern>

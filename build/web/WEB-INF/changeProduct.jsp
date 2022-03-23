@@ -11,11 +11,11 @@
         <form action="changingProduct" method="POST">
             <fieldset class="form-group">
                 <legend style="text-align: center; margin-top: 30px">Change Product</legend>
-                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h3>
+                <h5 style="text-align: center; margin-top: 20px; margin: auto auto; color: red">${info}</h5>
                     <label class="form-label mt-4" for="product2">Products</label>
-                    <select class="form-select"  id="product2" name="product2">
+                    <select class="form-select" id="product2" name="product2">
                         <c:forEach var="product" items="${products}">
-                            <option style="text-align: center" value="${product.id}">||${product.bywho} ${product.modell}|| ||Price: ${product.price}|| ||Size: ${product.size}|| ||Piece: ${product.piece} in ${product.maxPiece}||Price: ${product.maxPiece}||||</option>
+                            <option style="text-align: center" value="${product.id}">||${product.bywho} ${product.modell}|| ||Price: ${product.price}€ || ||Size: ${product.size}|| ||Piece: ${product.piece} in ${product.maxPiece}||</option>
                         </c:forEach>
                     </select>
                     <legend class="mt-4">What do you want to change?</legend>
