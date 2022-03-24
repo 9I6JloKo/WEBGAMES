@@ -6,6 +6,7 @@
 package entity;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +24,7 @@ public class Client implements Serializable{
     private String clientSurname;
     private String clientNumber;
     private double clientMoney;
+    @Column(unique = true)
     private String login;
     private String password;
     private String level;

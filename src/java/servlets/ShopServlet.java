@@ -5,13 +5,11 @@
  */
 package servlets;
 
-import com.sun.el.lang.ELArithmetic;
 import entity.Client;
 import entity.History;
 import entity.Product;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -45,12 +43,15 @@ import tools.PasswordProtected;
     "/showLogin",
     "/login",
     "/logout",
+    "/showRegistration",
+    "/showRevenue"
 })
 public class ShopServlet extends HttpServlet {
     @EJB ClientFacade clientFacade;
     @EJB ProductFacade productFacade;
     @EJB HistoryFacade historyFacade;
-    
+    String salt;
+    String password;
     @Override
     public void init() throws ServletException {
         super.init(); //To change body of generated methods, choose Tools | Templates.
@@ -62,9 +63,10 @@ public class ShopServlet extends HttpServlet {
         client.setLogin("admin");
         client.setLevel("3");
         PasswordProtected passwordProtected = new PasswordProtected();
-        String salt = passwordProtected.getSalt();
+        salt = passwordProtected.getSalt();
         client.setSalt(salt);
-        String password = passwordProtected.getProtectedPassword("12345", salt);
+        salt = client.getSalt();
+        password = passwordProtected.getProtectedPassword("123456", salt);
         client.setPassword(password);
         clientFacade.create(client);
     }
@@ -90,7 +92,7 @@ public class ShopServlet extends HttpServlet {
             case "/showLogin":
                 request.getRequestDispatcher("/login.jsp").forward(request, response);
                 break;
-            case "/addClient":
+            case "/showRegistration":
                 request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
                 break;
             case "/addProduct":
@@ -116,23 +118,17 @@ public class ShopServlet extends HttpServlet {
                     client.setClientSurname(request.getParameter("clientSurname"));
                     client.setClientNumber(request.getParameter("clientNumber"));
                     client.setClientMoney(Double.parseDouble(request.getParameter("clientMoney")));
-                    client.setLogin(request.getParameter("clientLogin"));
-                    String salt = passwordProtected.getSalt();
-                    client.setSalt(salt);
-                    String password = passwordProtected.getProtectedPassword(request.getParameter("clientPassword"), salt);
-                    client.setPassword(password);
+                    client.setLogin(request.getParameter("clientLogin").toLowerCase());
+                    String saltClient = passwordProtected.getSalt();
+                    client.setSalt(saltClient);
+                    String passwordClient = passwordProtected.getProtectedPassword(request.getParameter("clientPassword"), saltClient);
+                    client.setPassword(passwordClient);
                     client.setLevel("1");
                     clientFacade.create(client);
                     request.setAttribute("info", "Successfull!");
                 }
                 catch(Exception e){
-                    request.setAttribute("info", "Type error");
-                    request.setAttribute("clientName", request.getParameter("clientName"));
-                    request.setAttribute("clientSurname", request.getParameter("clientSurname"));
-                    request.setAttribute("clientNumber", request.getParameter("clientNumber"));
-                    request.setAttribute("clientMoney", request.getParameter("clientMoney"));
-                    request.setAttribute("clientLogin", request.getParameter("clientLogin"));
-                    request.setAttribute("clientPassword", request.getParameter("clientPassword"));
+                    request.setAttribute("info", "Login exists or TypeError");
                 }
                 request.getRequestDispatcher("/WEB-INF/addClient.jsp").forward(request, response);
                 break;
@@ -149,7 +145,7 @@ public class ShopServlet extends HttpServlet {
                     request.setAttribute("info", "Successfull!");
                 }
                 catch(Exception e){
-                    request.setAttribute("info", "Type error");
+                    request.setAttribute("info", "TypeError");
                     request.setAttribute("productModell", request.getParameter("productModell"));
                     request.setAttribute("productSize", request.getParameter("productSize"));
                     request.setAttribute("productByWho", request.getParameter("productByWho"));
@@ -160,8 +156,13 @@ public class ShopServlet extends HttpServlet {
                 break;
             case "/buyingProduct":
                 try{
-                    Client client = clientFacade.find(Long.parseLong(request.getParameter("clientt")));
-                    Product product = productFacade.find(Long.parseLong(request.getParameter("productt")));
+                    Client client = (Client) session.getAttribute("authUser");
+                    Product product = productFacade.find(Long.parseLong(request.getParameter("productt"))); 
+                    /*
+                    if(!"1".equals(client.getLevel()) && !"2".equals(client.getLevel())) {
+                        client = clientFacade.find(Long.parseLong(request.getParameter("clientt")));
+                    } 
+                    */
                     if(    !clientList.isEmpty()
                         && !productList.isEmpty()
                         && client.getClientMoney() >= product.getPrice()
@@ -182,71 +183,93 @@ public class ShopServlet extends HttpServlet {
                             request.setAttribute("info", "Successfull!");
                     }
                     else{
-                        request.setAttribute("info", "Error");
+                        request.setAttribute("info", "TypeError");
                     }
                 }
                 catch(Exception e){
-                    request.setAttribute("info", "Error");
+                    request.setAttribute("info", "TypeError");
                 }
-                request.setAttribute("clients", clientList);
-                request.setAttribute("products", productList);
                 request.getRequestDispatcher("buying").forward(request, response);   
                 break;
             case "/changingClient":
-                Long find = Long.parseLong(request.getParameter("clientt2"));
                 try{
-                    Client client = clientFacade.find(find);
-                    switch(request.getParameter("optionsRadios")){
-                        case "1":
+                    int i;
+                    Client client;
+                    Client authUser = (Client) session.getAttribute("authUser");
+                    
+                    if("1".equals(authUser.getLevel()) || "2".equals(authUser.getLevel())) {
+                        client = (Client) session.getAttribute("authUser");
+                        i = 0;
+                    }
+                    else{
+                        Long find = Long.parseLong(request.getParameter("clientt2"));
+                        client = clientFacade.find(find);
+                        i = 1;
+                    }
+                    if(client.getPassword().equals(password) && !authUser.getPassword().equals(password)){
+                        request.setAttribute("info", "Denied");
+                    }
+                    else{
+                        switch(request.getParameter("optionsRadios")){
+                            case "1":
                                 client.setClientName(request.getParameter("responsse"));
                                 clientFacade.edit(client);
                                 request.setAttribute("info", "Successfull!");   
-                            break;
-                        case "2":
-                            client.setClientSurname(request.getParameter("responsse"));
-                            clientFacade.edit(client);
-                            request.setAttribute("info", "Successfull!");
-                            break;
-                        case "3":
-                            if(Long.parseLong(request.getParameter("responsse")) > 5000000){
-                                client.setClientNumber(request.getParameter("responsse"));
+                                break;
+                            case "2":
+                                client.setClientSurname(request.getParameter("responsse"));
                                 clientFacade.edit(client);
                                 request.setAttribute("info", "Successfull!");
-                            }
-                            else{
-                                request.setAttribute("info", "Error");
-                            }
-                            break;
-                        case "4":
-                                client.setClientMoney(Double.parseDouble(request.getParameter("responsse")));
+                                break;
+                            case "3":
+                                if(Long.parseLong(request.getParameter("responsse")) > 5000000){
+                                    client.setClientNumber(request.getParameter("responsse"));
+                                    clientFacade.edit(client);
+                                    request.setAttribute("info", "Successfull!");
+                                }
+                                else{
+                                    request.setAttribute("info", "TypeError");
+                                }
+                                break;
+                            case "4":
+                                    client.setClientMoney(Double.parseDouble(request.getParameter("responsse")));
+                                    clientFacade.edit(client);
+                                    request.setAttribute("info", "Successfull!");   
+                                break;
+                            case "5":
+                                if(clientFacade.findByLogin(request.getParameter("responsse").toLowerCase()).equals(request.getParameter("responsse").toLowerCase())){
+                                    client.setLogin(request.getParameter("responsse").toLowerCase());
+                                    clientFacade.edit(client);
+                                    request.setAttribute("info", "Successfull!");
+                                }
+                                else{
+                                    request.setAttribute("info", "Login exists!");
+                                }
+                                break;
+                            case "6":
+                                if(request.getParameter("responsse").length() > 5){
+                                    String saltClient = passwordProtected.getSalt();
+                                    client.setSalt(saltClient);
+                                    client.setPassword(passwordProtected.getProtectedPassword(request.getParameter("responsse"), saltClient));
+                                    clientFacade.edit(client);
+                                    request.setAttribute("info", "Successfull!");   
+                                }
+                                else{
+                                    request.setAttribute("info", "TypeError");
+                                }
+                                break;
+                            case "7":
+                                client.setLevel(request.getParameter("responsse"));
                                 clientFacade.edit(client);
-                                request.setAttribute("info", "Successfull!");   
-                            break;
-                        case "5":
-                            client.setLogin(request.getParameter("responsse"));
-                            clientFacade.edit(client);
-                            request.setAttribute("info", "Successfull!");
-                            break;
-                        case "6":
-                            if(request.getParameter("responsse").length() > 5){
-                                String salt = passwordProtected.getSalt();
-                                client.setSalt(salt);
-                                client.setPassword(passwordProtected.getProtectedPassword(request.getParameter("responsse"), salt));
-                                clientFacade.edit(client);
-                                request.setAttribute("info", "Successfull!");   
-                            }
-                            else{
-                                request.setAttribute("info", "Error");
-                            }
-                            break;
-                        case "7":
-                            client.setLevel(request.getParameter("responsse"));
-                            clientFacade.edit(client);
-                            request.setAttribute("info", "Successfull!");
-                            break;
-                        default:
-                            request.setAttribute("info", "Choose radiobutton");
-                            break;
+                                request.setAttribute("info", "Successfull!");
+                                break;
+                            default:
+                                request.setAttribute("info", "Choose radiobutton");
+                                break;
+                        }
+                        if(i == 0){
+                            session.setAttribute("authUser", client);   
+                        }
                     }
                 }
                 catch(Exception e){
@@ -280,11 +303,7 @@ public class ShopServlet extends HttpServlet {
                                 request.setAttribute("info", "Successfull!");   
                             break;
                         case "5":
-                                if(product.getMaxPiece() >= Integer.parseInt(request.getParameter("responsse"))){
-                                }
-                                else {
-                                    product.setMaxPiece(Integer.parseInt(request.getParameter("responsse")));   
-                                }
+                                product.setMaxPiece(Integer.parseInt(request.getParameter("responsse")));   
                                 product.setPiece(Integer.parseInt(request.getParameter("responsse")));
                                 productFacade.edit(product);
                                 request.setAttribute("info", "Successfull!");
@@ -302,18 +321,18 @@ public class ShopServlet extends HttpServlet {
                 break;
             case "/login":
                 String login = request.getParameter("login");
-                String password = request.getParameter("password");
+                String passwordLog = request.getParameter("password");
                 Client client = clientFacade.findByLogin(login);
                 if(client == null){
-                    request.setAttribute("info", "Неверный логин или пароль");
+                    request.setAttribute("info", "Wrong login or password");
                     request.setAttribute("login", login);
                     request.getRequestDispatcher("/login.jsp").forward(request, response);
                     break;
                 }
-                String salt = client.getSalt();
-                password = passwordProtected.getProtectedPassword(password, salt);
-                if(!password.equals(client.getPassword())){
-                    request.setAttribute("info", "Неверный логин или пароль");
+                String saltClient = client.getSalt();
+                passwordLog = passwordProtected.getProtectedPassword(passwordLog, saltClient);
+                if(!passwordLog.equals(client.getPassword())){
+                    request.setAttribute("info", "Wrong login or password");
                     request.setAttribute("login", login);
                     request.getRequestDispatcher("/login.jsp").forward(request, response);
                     break;
@@ -326,10 +345,12 @@ public class ShopServlet extends HttpServlet {
                 session = request.getSession(false);
                 if(session != null){
                     session.invalidate();
-                    request.setAttribute("info", "Вы вышли");
+                    request.setAttribute("info", "Logout");
                 }
                 request.getRequestDispatcher("/showLogin").forward(request, response);
                 break;
+            case "/showRevenue":
+                request.getRequestDispatcher("WEB-INF/revenue.jsp").forward(request, response);
         }
     }
 

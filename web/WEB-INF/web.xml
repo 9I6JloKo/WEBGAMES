@@ -19,6 +19,7 @@
             <url-pattern>/WEB-INF/addProduct.jsp</url-pattern>
             <url-pattern>/WEB-INF/changeClient.jsp</url-pattern>
             <url-pattern>/WEB-INF/Buying.jsp</url-pattern>
+            <url-pattern>/WEB-INF/revenue.jsp</url-pattern>
             <page-encoding>UTF-8</page-encoding>
             <include-prelude>/WEB-INF/jspf/header.jspf</include-prelude>
             <include-coda>/WEB-INF/jspf/footer.jspf</include-coda>
