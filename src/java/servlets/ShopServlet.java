@@ -205,6 +205,9 @@ public class ShopServlet extends HttpServlet {
                         Long find = Long.parseLong(request.getParameter("clientt2"));
                         client = clientFacade.find(find);
                         i = 1;
+                        if(client.equals(authUser)){
+                            i = 0;
+                        }
                     }
                     if(client.getPassword().equals(password) && !authUser.getPassword().equals(password)){
                         request.setAttribute("info", "Denied");
@@ -237,13 +240,20 @@ public class ShopServlet extends HttpServlet {
                                     request.setAttribute("info", "Successfull!");   
                                 break;
                             case "5":
-                                if(clientFacade.findByLogin(request.getParameter("responsse").toLowerCase()).equals(request.getParameter("responsse").toLowerCase())){
+                                try{
+                                    if(!clientFacade.findByLogin(request.getParameter("responsse")).getLogin().equalsIgnoreCase(request.getParameter("responsse"))){
                                     client.setLogin(request.getParameter("responsse").toLowerCase());
                                     clientFacade.edit(client);
                                     request.setAttribute("info", "Successfull!");
+                                    }
+                                    else{
+                                        request.setAttribute("info", "Login exists!");
+                                    }
                                 }
-                                else{
-                                    request.setAttribute("info", "Login exists!");
+                                catch(Exception e){
+                                    client.setLogin(request.getParameter("responsse").toLowerCase());
+                                    clientFacade.edit(client);
+                                    request.setAttribute("info", "Successfull!");
                                 }
                                 break;
                             case "6":
@@ -255,7 +265,7 @@ public class ShopServlet extends HttpServlet {
                                     request.setAttribute("info", "Successfull!");   
                                 }
                                 else{
-                                    request.setAttribute("info", "TypeError");
+                                    request.setAttribute("info", "Length min 6");
                                 }
                                 break;
                             case "7":
@@ -277,9 +287,10 @@ public class ShopServlet extends HttpServlet {
                     request.setAttribute("responsse", request.getParameter("responsse"));    
                 }
                 request.getRequestDispatcher("/changeClient").forward(request, response);
+                break;
             case "/changingProduct":
-                Long find2 = Long.parseLong(request.getParameter("product2"));
                 try{
+                    Long find2 = Long.parseLong(request.getParameter("product2"));
                     Product product = productFacade.find(find2);
                     switch(request.getParameter("optionsRadios")){
                         case "1":

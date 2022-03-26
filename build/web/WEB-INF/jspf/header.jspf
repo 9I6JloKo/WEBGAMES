@@ -59,9 +59,11 @@
                             <li class="nav-item">
                               <a class="nav-link" href="changeProduct">ChangeProduct</a>
                             </li>
-                            <li class="nav-item">
-                              <a class="nav-link" href="showRevenue">Revenue</a>
-                            </li>
+                            <c:if test="${authUser.level eq '3'}">
+                                <li class="nav-item">
+                                  <a class="nav-link" href="showRevenue">Revenue</a>
+                                </li>
+                            </c:if>
                           </ul>
                         </div>
                     </c:if>
