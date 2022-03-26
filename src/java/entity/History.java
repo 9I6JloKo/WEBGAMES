@@ -28,6 +28,7 @@ public class History implements Serializable{
     private Double size;
     private String clientName;
     private LocalDate localDate;
+    private Double productPrice;
     
     public void setId(Long id) {
         this.id = id;
@@ -35,6 +36,14 @@ public class History implements Serializable{
 
     public Long getId() {
         return id;
+    }
+
+    public Double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(Double productPrice) {
+        this.productPrice = productPrice;
     }
     
     public String getClientName() {

@@ -44,7 +44,8 @@ import tools.PasswordProtected;
     "/login",
     "/logout",
     "/showRegistration",
-    "/showRevenue"
+    "/showRevenue",
+    "/revenue"
 })
 public class ShopServlet extends HttpServlet {
     @EJB ClientFacade clientFacade;
@@ -86,6 +87,7 @@ public class ShopServlet extends HttpServlet {
         String path = request.getServletPath();
         List<Client> clientList = clientFacade.findAll();
         List<Product> productList = productFacade.findAll();
+        List<History> historyList = historyFacade.findAll();
         PasswordProtected passwordProtected = new PasswordProtected();
         HttpSession session = request.getSession();
         switch (path) {
@@ -177,6 +179,7 @@ public class ShopServlet extends HttpServlet {
                             history.setClientNumber(client.getClientNumber());
                             history.setProduct(product.getModell());
                             history.setSize(product.getSize());
+                            history.setProductPrice(product.getPrice());
                             Calendar c = new GregorianCalendar();
                             history.setDateOfBuying(c.getTime());
                             historyFacade.create(history);
@@ -362,6 +365,24 @@ public class ShopServlet extends HttpServlet {
                 break;
             case "/showRevenue":
                 request.getRequestDispatcher("WEB-INF/revenue.jsp").forward(request, response);
+                break;
+            case "/revenue":
+                Double profit = 0.0;
+                Double profitYear = 0.0;
+                String monthNumber = request.getParameter("revenue");
+                for(History history : historyList){
+                    if((history.getDateOfBuying().getYear() == 122) && (history.getDateOfBuying().getMonth() == (Integer.parseInt(monthNumber)-1))){
+                        profit += history.getProductPrice();
+                        profitYear += history.getProductPrice();
+                    }
+                    else{
+                        profitYear += history.getProductPrice();
+                    }
+                }
+                request.setAttribute("profit", profit);
+                request.setAttribute("profitYear", profitYear);
+                request.getRequestDispatcher("WEB-INF/revenue.jsp").forward(request, response);
+                break;
         }
     }
 
