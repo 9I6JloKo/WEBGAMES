@@ -86,6 +86,7 @@ public class ShopServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String path = request.getServletPath();
         List<Client> clientList = clientFacade.findAll();
+        clientList.remove(0);
         List<Product> productList = productFacade.findAll();
         List<History> historyList = historyFacade.findAll();
         PasswordProtected passwordProtected = new PasswordProtected();
